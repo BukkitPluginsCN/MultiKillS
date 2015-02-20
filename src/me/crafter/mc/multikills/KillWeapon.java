@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,6 @@ public class KillWeapon {
 		String[] splitted;
 		for (String x : item){
 			if (x.contains(":")){
-				Bukkit.broadcastMessage(x);
 				splitted = x.split(":",2);
 				if (splitted[0].equals("JINKELA")){
 					itemSpecialList.put("JINKELA", splitted[1]);

@@ -1,7 +1,7 @@
 package me.crafter.mc.multikills;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLargeFireball;
+//import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLargeFireball;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.CaveSpider;
@@ -10,9 +10,11 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
@@ -41,7 +43,9 @@ public class DeathInfo {
 		time = Bukkit.getWorld("world").getFullTime();
 		//Check player is the killer
 		if (event.getEntity().getKiller() instanceof Player){
-			killer = event.getEntity().getKiller().getDisplayName();
+			killer = event.getEntity().getKiller().getName();
+			//killer = ((Player)((EntityDamageByEntityEvent)event.getEntity().getLastDamageCause()).getDamager()).getName();
+			
 			if (event.getEntity().getLastDamageCause().getCause() == DamageCause.THORNS){
 				reason = "thorns";
 			}
@@ -88,9 +92,31 @@ public class DeathInfo {
 			damager = null;
 			if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent){
 				damager = ((EntityDamageByEntityEvent)event.getEntity().getLastDamageCause()).getDamager();
+				//VOODOO FIX NOT INTEND
+				if (damager instanceof Player){
+					killer = ((Player)damager).getName();
+					if (event.getEntity().getLastDamageCause().getCause() == DamageCause.THORNS){
+						reason = "thorns";
+					}
+					else {
+						reason = "pvp";
+						weapon = KillWeapon.gethisweapon((Player)damager);
+						if (event.getEntity().getLastDamageCause().getCause() == DamageCause.PROJECTILE){
+							reason = "pvparrow";
+							weapon = KillWeapon.gethisweapon((Player)damager);
+						}
+					}
+					if (killer.equals("connection_lost")){
+						reason = "fuzhu";
+					}
+					if (killer.equals(die.getName())){
+						reason = "kill";
+					}
+				}
 			}
 			if (cause == DamageCause.PROJECTILE){
-				if (damager instanceof CraftLargeFireball || damager instanceof Ghast){
+				if (damager.toString().contains("CraftSmallFireball")) reason = "blaze";
+				if (damager.toString().contains("CraftLargeFireball") || damager instanceof Ghast){
 					reason = "ghast";
 				}
 				else if (damager instanceof Arrow){
@@ -117,22 +143,44 @@ public class DeathInfo {
 		        		reason = "skeleton";
 		        	}
 		        }
-		        if ((damager instanceof Wolf)) reason = "wolf";
+		        if ((damager instanceof Wolf)) {
+		        	reason = "wolf";
+		        	if (((Wolf)damager).getOwner() == null){
+		        		killer = "Ò°Éú";
+		        	} else {
+		        		killer = ((Wolf)damager).getOwner().getName();
+		        	}
+		        }
 		        if ((damager instanceof PigZombie)) reason = "pigzombie";
 		        if ((damager instanceof IronGolem)) reason = "irongolem";
 		        if ((damager instanceof Giant)) reason = "giant";
 		        if ((damager instanceof Wither)) reason = "wither";
 		        if ((damager instanceof Blaze)) reason = "blaze";
+		        if ((damager instanceof Guardian)) reason = "guardian";
+		        if ((damager instanceof Rabbit)) reason = "rabbit";
 			}
 		}
 	}
 	
 	public String getDier(){
-		return die.getDisplayName();
+		return die.getName();
 	}
 	
 	public String getKiller(){
 		return killer;
+	}
+	
+	public String getDierDisplayName(){
+		return die.getDisplayName();
+	}
+	
+	public String getKillerDisplayName(){
+		Player pk = Bukkit.getPlayer(killer);
+		if (pk == null) {
+			return "???";
+		} else {
+			return pk.getDisplayName();
+		}
 	}
 	
 	public String getReason(){

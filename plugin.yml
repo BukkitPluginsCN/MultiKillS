@@ -1,0 +1,10 @@
+name: MultiKillS
+main: me.crafter.mc.multikills.MultiKillS
+version: 2.4
+description: >
+             Killing Spree! S!
+commands:
+   iteminfos:
+      permission: multikills.iteminfo
+      usage: |
+         /iteminfos (wip feature)

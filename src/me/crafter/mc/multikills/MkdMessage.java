@@ -3,7 +3,6 @@ package me.crafter.mc.multikills;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -75,7 +74,7 @@ public class MkdMessage {
 		if (handle > 10) handle = 10;
 		if (MkdMessage.breakkillmessage.containsKey(handle) && k != d){
 			MkdMessage.message.add(MkdMessage.breakkillmessage.get(handle).replaceAll("%k", k.getDisplayName()).replaceAll("%d", d.getDisplayName()));
-			for (Player p : Arrays.asList(Bukkit.getServer().getOnlinePlayers())){
+			for (Player p : Bukkit.getServer().getOnlinePlayers()){
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound custom.kill_break "+p.getName());
 			}
 		}
@@ -100,7 +99,7 @@ public class MkdMessage {
 		if (MkdMessage.killmessage.containsKey(handle)){
 			MkdMessage.message.add(MkdMessage.killmessage.get(handle).replaceAll("%k", k.getDisplayName()));
 		}
-		for (Player p : Arrays.asList(Bukkit.getServer().getOnlinePlayers())){
+		for (Player p : Bukkit.getServer().getOnlinePlayers()){
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound custom.kill_"+String.valueOf(handle)+" "+p.getName());
 		}
 	}
